@@ -13,15 +13,14 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="300dp"
-        android:layout_height="100dp"
-        >
+        android:layout_height="74dp">
 
         <TextView
             android:id="@+id/message_text"
             android:layout_width="178dp"
             android:layout_height="40dp"
             android:layout_marginStart="18dp"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="4dp"
             android:text="Message"
             app:layout_constraintStart_toEndOf="@+id/message_time"
             app:layout_constraintStart_toStartOf="parent"

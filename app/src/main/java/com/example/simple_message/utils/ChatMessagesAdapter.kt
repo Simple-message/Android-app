@@ -1,15 +1,23 @@
 package com.example.simple_message.utils
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simple_message.R
+import com.example.simple_message.factories.Message
+import java.time.format.DateTimeFormatter
 
-class ChatMessagesAdapter: RecyclerView.Adapter<ChatMessagesAdapter.ViewHolder>() {
+class ChatMessagesAdapter(messages: ArrayList<Message>): RecyclerView.Adapter<ChatMessagesAdapter.ViewHolder>() {
 
-    val messages = arrayOf(arrayOf("hello", "20.00"), arrayOf("Hi", "20.01"))
+    private var messages: ArrayList<Message>
+
+    init {
+        this.messages = messages
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatMessagesAdapter.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.chat_message, parent, false)
@@ -17,9 +25,13 @@ class ChatMessagesAdapter: RecyclerView.Adapter<ChatMessagesAdapter.ViewHolder>(
         return viewHolder
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ChatMessagesAdapter.ViewHolder, position: Int) {
-        holder.messageText.text = messages[position][0]
-        holder.messageTime.text = messages[position][1]
+        holder.messageText.text = messages.get(position).text
+        val time = messages.get(position).time
+        val formatter = DateTimeFormatter.ofPattern("HH:mm")
+        val messageTime = time.format(formatter)
+        holder.messageTime.text = messageTime
     }
 
     override fun getItemCount(): Int {

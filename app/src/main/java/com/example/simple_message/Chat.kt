@@ -13,11 +13,15 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class Chat : AppCompatActivity() {
+    //region MESSAGEMANAGERS
     private var messageLayoutManager: RecyclerView.LayoutManager? = null
     private var messageAdapter: RecyclerView.Adapter<ChatMessagesAdapter.ViewHolder>? = null
     lateinit var messageInput: EditText
+    //endregion
+    //region MESSAGE
     lateinit var sendButton: ImageButton
     lateinit var messages: ArrayList<Message>
+    //endregion
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {

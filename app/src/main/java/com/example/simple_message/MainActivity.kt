@@ -10,19 +10,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         SocketHandler.setSocket()
-
         val socket = SocketHandler.getSocket()
         socket.connect()
+
         //region BUTTONS
-        val buttonToAChat = findViewById<Button>(R.id.button_to_a_chat)
         val buttonRegister = findViewById<Button>(R.id.buttonRegister)
         val buttonLogIn = findViewById<Button>(R.id.buttonLogIn)
         //endregion
-
-        buttonToAChat.setOnClickListener {
-            val intent = Intent(this, Chat::class.java)
-            startActivity(intent)
-        }
 
         buttonRegister.setOnClickListener {
             // here we need to connect to server and:

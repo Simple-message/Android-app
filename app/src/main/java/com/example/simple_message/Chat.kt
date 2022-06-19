@@ -27,6 +27,8 @@ class Chat : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
+        val tag=intent.getStringExtra("tag")
+
 
         messageInput = findViewById(R.id.messageInput)
         sendButton = findViewById(R.id.send)

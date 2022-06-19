@@ -1,6 +1,7 @@
 package com.example.simple_message
 
 import android.content.DialogInterface
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -25,7 +26,13 @@ class FeedActivity : AppCompatActivity() {
 
         // here we need a request to server getAllChats (tag)
         feedView.layoutManager = LinearLayoutManager(this)
-        feedView.adapter = feedAdapter(feed.chats)
+        var adapter = feedAdapter(feed.chats)
+        feedView.adapter = adapter
+        adapter.setOnItemClickListener(object: feedAdapter.OnItemClickListener{
+            override fun OnClick(position: Int) {
+                openChat(feed.chats[position].toString())
+            }
+        })
         // display all chat
 
         buttonNewChat.setOnClickListener {
@@ -35,15 +42,16 @@ class FeedActivity : AppCompatActivity() {
             val dialogLayout = inflater.inflate(R.layout.new_chat, null)
             val tag = dialogLayout.findViewById<EditText>(R.id.tagNewChat).text.toString()
             builder.setView(dialogLayout)
-            builder.setPositiveButton("OK"){ dialogInterface: DialogInterface, i: Int ->
+            builder.setPositiveButton("OK"){ _, _ ->
                 feed.chats = attach(feed.chats, tag)
                 feedView.adapter = feedAdapter(feed.chats)
             }
-            builder.setNegativeButton("Cancel"){ dialogInterface: DialogInterface, i: Int ->
+            builder.setNegativeButton("Cancel"){ _, _ ->
             }
             builder.show()
             //show some pop-up asking for tag
         }
+
     }
 
     fun initialgetTag(): String{
@@ -54,7 +62,6 @@ class FeedActivity : AppCompatActivity() {
     fun initialGetChats(): Array<String?> {
         // go to file
         val chats = arrayOf<String?>("kfsjlsd", "dlkfsl", "osfkd")
-        //val chats : Array<String?> = emptyArray()
         return chats
     }
 
@@ -62,5 +69,11 @@ class FeedActivity : AppCompatActivity() {
         val array = arr.copyOf(arr.size + 1)
         array[arr.size] = str
         return array
+    }
+
+    fun openChat(tag: String){
+        val intent = Intent(this, Chat::class.java)
+        intent.putExtra("tag",tag)
+        startActivity(intent)
     }
 }

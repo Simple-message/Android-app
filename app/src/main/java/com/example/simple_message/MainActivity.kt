@@ -9,7 +9,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        SocketHandler.setSocket()
 
+        val socket = SocketHandler.getSocket()
+        socket.connect()
         //region BUTTONS
         val buttonToAChat = findViewById<Button>(R.id.button_to_a_chat)
         val buttonRegister = findViewById<Button>(R.id.buttonRegister)
@@ -31,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         buttonLogIn.setOnClickListener {
+            socket.emit("")
             // here we need to connect to server and:
             // 1) Check if tag is used
             // 2) if true: check if password is correct:

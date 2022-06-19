@@ -19,6 +19,7 @@ class FeedActivity : AppCompatActivity() {
         setContentView(R.layout.activity_feed)
         //here we get tag from file or server
         var feed = Feed(initialgetTag(), initialGetChats());
+        val userTag=intent.getStringExtra("userTag")
         //region VIEWS
         val feedView = findViewById<RecyclerView>(R.id.chatList)
         val buttonNewChat = findViewById<Button>(R.id.buttonNewChat)

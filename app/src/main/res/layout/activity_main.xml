@@ -35,13 +35,9 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-<<<<<<< HEAD
-        android:text="Login"
-=======
         android:minHeight="48dp"
         android:text="@string/tagNew"
         app:layout_constraintBottom_toBottomOf="parent"
->>>>>>> c8b4a0297eb53aa799c1e986d030a47642da3628
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"

@@ -90,7 +90,6 @@ class Chat : AppCompatActivity() {
                     val chat = chatsRes.getJSONObject(i)
                     val messageText = chat.getString("message_text")
                     Log.d("Tag", messageText)
-                    attach(chats, messageText)
                 }
             }
         }

@@ -6,13 +6,10 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-<<<<<<< HEAD
 import android.widget.Toast
 import org.json.JSONObject
 import org.json.JSONTokener
-=======
 import java.io.File
->>>>>>> c8b4a0297eb53aa799c1e986d030a47642da3628
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,4 +1,4 @@
-package com.example.simple_message.utils
+package com.example.simple_message.adapters
 
 import android.os.Build
 import android.view.LayoutInflater
@@ -19,16 +19,18 @@ class ChatMessagesAdapter(messages: ArrayList<Message>): RecyclerView.Adapter<Ch
         this.messages = messages
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatMessagesAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.chat_message, parent, false)
         val viewHolder = ViewHolder(view)
         return viewHolder
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onBindViewHolder(holder: ChatMessagesAdapter.ViewHolder, position: Int) {
-        holder.messageText.text = messages.get(position).text
-        val time = messages.get(position).time
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val message = messages.get(position)
+        holder.messageText.text = message.text
+        holder.messageName.text = message.name
+        val time = message.time
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
         val messageTime = time.format(formatter)
         holder.messageTime.text = messageTime
@@ -41,11 +43,17 @@ class ChatMessagesAdapter(messages: ArrayList<Message>): RecyclerView.Adapter<Ch
     inner class ViewHolder(messageView: View): RecyclerView.ViewHolder(messageView) {
         var messageText: TextView
         var messageTime: TextView
+        var messageName: TextView
 
         init {
             messageText = messageView.findViewById(R.id.message_text)
             messageTime = messageView.findViewById(R.id.message_time)
+            messageName = messageView.findViewById(R.id.message_name)
         }
+    }
+
+    fun addMessage(message: Message) {
+        messages.add(message)
     }
 
 }

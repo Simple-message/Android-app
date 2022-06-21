@@ -1,10 +1,8 @@
 package com.example.simple_message
 
-import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
@@ -12,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simple_message.adapters.feedAdapter
 import com.example.simple_message.factories.Feed
-import com.example.simple_message.utils.ChatMessagesAdapter
 import org.json.JSONObject
 import org.json.JSONTokener
 
@@ -29,8 +26,6 @@ class FeedActivity : AppCompatActivity() {
 //        uid = intent.getStringExtra("uid")
         uid = "1"
 
-        chats = attach(chats, "AAAAAA")
-
         feed = Feed(initialgetTag(), chats)
         //region VIEWS
         val feedView = findViewById<RecyclerView>(R.id.chatList)
@@ -46,9 +41,6 @@ class FeedActivity : AppCompatActivity() {
                 openChat(feed.chats[position].toString())
             }
         })
-//         display all chat
-        feed.chats = attach(feed.chats, "BBBBBBB")
-        adapter.updateTags(feed.chats)
 
         buttonNewChat.setOnClickListener {
             val builder = AlertDialog.Builder(this)
@@ -70,13 +62,28 @@ class FeedActivity : AppCompatActivity() {
         SocketHandler.setSocket()
         socket = SocketHandler.getSocket()
         socket!!.connect()
-        socket?.emit("getChats", uid)
+        socket?.emit("login", "Bender")
+        socket?.on("login") { args ->
+            if (args[0] != null)
+            {
+                val data = args[0] as String
+                val jsonObject = JSONTokener(data).nextValue() as JSONObject
+                val code = jsonObject.getString("code")
+                val uid = jsonObject.getString("uid").toIntOrNull()
+                if (code == "200" && uid != null) {
+                    socket?.emit("getChats")
+                } else {
+                    // show error
+                }
+            }
+        }
         socket!!.on("chats") { args ->
             if (args[0] != null) {
                 val data = args[0] as String
                 val jsonObject = JSONTokener(data).nextValue() as JSONObject
                 val code = jsonObject.getString("code")
                 // handle code
+                if (code != "200") return@on
                 val chatsRes = jsonObject.getJSONArray("result")
                 for (i in 0 until chatsRes.length()) {
                     val chat = chatsRes.getJSONObject(i)
@@ -101,7 +108,8 @@ class FeedActivity : AppCompatActivity() {
 
     fun openChat(tag: String){
         val intent = Intent(this, Chat::class.java)
-        intent.putExtra("tag",tag)
+        intent.putExtra("uid","8")
+        intent.putExtra("name","mila")
         startActivity(intent)
     }
 }

@@ -5,5 +5,6 @@ import java.time.ZonedDateTime
 
 interface MessageInterface {
     val text: String
+    val name: String
     val time: ZonedDateTime
 }

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simple_message.adapters.feedAdapter
 import com.example.simple_message.factories.Feed
+import com.example.simple_message.utils.ChatMessagesAdapter
 import org.json.JSONObject
 import org.json.JSONTokener
 
@@ -19,36 +20,18 @@ class FeedActivity : AppCompatActivity() {
 
     var uid: String? = null
     var socket: io.socket.client.Socket? = null
-    val chats = arrayOf<String?>()
+    var chats = arrayOf<String?>()
+    lateinit var feed: Feed
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+        override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
-        uid = intent.getStringExtra("uid")
-        SocketHandler.setSocket()
-        socket = SocketHandler.getSocket()
-        socket!!.connect()
-        socket?.emit("getChats", uid)
-        socket!!.on("chats") { args ->
-            if (args[0] != null) {
-                val data = args[0] as String
-                val jsonObject = JSONTokener(data).nextValue() as JSONObject
-                val code = jsonObject.getString("code")
-                // handle code
-                val chatsRes = jsonObject.getJSONArray("chats")
-                for (i in 0 until chatsRes.length()) {
-                    val chat = chatsRes.getJSONObject(i)
-                    val messageText = chat.getString("message_text")
-                    Log.d("Tag", messageText)
-                    attach(chats, messageText)
-                }
-                createFeed(chats)
-            }
-        }
-    }
+//        uid = intent.getStringExtra("uid")
+        uid = "1"
 
-    fun createFeed(chats: Array<String?>) {
-        var feed = Feed(initialgetTag(), chats)
+        chats = attach(chats, "AAAAAA")
+
+        feed = Feed(initialgetTag(), chats)
         //region VIEWS
         val feedView = findViewById<RecyclerView>(R.id.chatList)
         val buttonNewChat = findViewById<Button>(R.id.buttonNewChat)
@@ -63,7 +46,9 @@ class FeedActivity : AppCompatActivity() {
                 openChat(feed.chats[position].toString())
             }
         })
-        // display all chat
+//         display all chat
+        feed.chats = attach(feed.chats, "BBBBBBB")
+        adapter.updateTags(feed.chats)
 
         buttonNewChat.setOnClickListener {
             val builder = AlertDialog.Builder(this)
@@ -82,6 +67,25 @@ class FeedActivity : AppCompatActivity() {
             //show some pop-up asking for tag
         }
 
+        SocketHandler.setSocket()
+        socket = SocketHandler.getSocket()
+        socket!!.connect()
+        socket?.emit("getChats", uid)
+        socket!!.on("chats") { args ->
+            if (args[0] != null) {
+                val data = args[0] as String
+                val jsonObject = JSONTokener(data).nextValue() as JSONObject
+                val code = jsonObject.getString("code")
+                // handle code
+                val chatsRes = jsonObject.getJSONArray("result")
+                for (i in 0 until chatsRes.length()) {
+                    val chat = chatsRes.getJSONObject(i)
+                    val messageText = chat.getString("message_text")
+                    feed.chats = attach(feed.chats, messageText)
+                }
+                adapter.updateTags(feed.chats)
+            }
+        }
     }
 
     fun initialgetTag(): String{

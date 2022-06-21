@@ -8,8 +8,9 @@ import android.widget.TextView
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simple_message.R
+import com.example.simple_message.factories.Feed
 
-class feedAdapter(private val tags: Array<String?>) : RecyclerView
+class feedAdapter(private var tags: Array<String?>) : RecyclerView
 .Adapter<feedAdapter.viewHolder>() {
 
     class viewHolder(itemView: View, listener: OnItemClickListener) : RecyclerView.ViewHolder(itemView) {
@@ -50,4 +51,9 @@ class feedAdapter(private val tags: Array<String?>) : RecyclerView
     }
 
     override fun getItemCount() = tags.size
+
+    fun updateTags(tags: Array<String?>) {
+        this.tags = tags
+    }
+
 }

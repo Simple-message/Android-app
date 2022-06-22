@@ -1,16 +1,24 @@
 package com.example.simple_message
 
+import SocketHandler
+import android.graphics.BitmapFactory
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Base64
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.simple_message.factories.Message
 import com.example.simple_message.adapters.ChatMessagesAdapter
+import com.example.simple_message.factories.Message
 import org.json.JSONObject
 import org.json.JSONTokener
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
+import java.net.MalformedURLException
+import java.net.URL
 import java.time.ZonedDateTime
 
 class Chat : AppCompatActivity() {
@@ -68,6 +76,19 @@ class Chat : AppCompatActivity() {
         }
         socket!!.on("messageToChat") { args ->
             handleMessageToChat(args)
+        }
+
+        socket?.emit("avatar", recieverUid)
+        socket!!.on("avatar") {args ->
+            if (args[0] != null) {
+                val data = args[0] as JSONObject
+                val code = data.getString("code")
+                //check code
+                val imageString = data.getString("avatar")
+                val imageBytes = Base64.decode(imageString, Base64.DEFAULT)
+                val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+            }
+
         }
     }
 

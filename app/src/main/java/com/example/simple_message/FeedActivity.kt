@@ -23,8 +23,7 @@ class FeedActivity : AppCompatActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
-//        uid = intent.getStringExtra("uid")
-        uid = "1"
+        uid = intent.getStringExtra("uid")
 
         feed = Feed(initialgetTag(), chats)
         //region VIEWS
@@ -38,7 +37,8 @@ class FeedActivity : AppCompatActivity() {
         feedView.adapter = adapter
         adapter.setOnItemClickListener(object: feedAdapter.OnItemClickListener{
             override fun OnClick(position: Int) {
-                openChat(feed.chats[position].toString())
+                // val name = feed.chats[position].toString()
+                openChat("mila", "8") // put here name and reciever id
             }
         })
 
@@ -58,25 +58,9 @@ class FeedActivity : AppCompatActivity() {
             builder.show()
             //show some pop-up asking for tag
         }
-
-        SocketHandler.setSocket()
         socket = SocketHandler.getSocket()
         socket!!.connect()
-        socket?.emit("login", "Bender")
-        socket?.on("login") { args ->
-            if (args[0] != null)
-            {
-                val data = args[0] as String
-                val jsonObject = JSONTokener(data).nextValue() as JSONObject
-                val code = jsonObject.getString("code")
-                val uid = jsonObject.getString("uid").toIntOrNull()
-                if (code == "200" && uid != null) {
-                    socket?.emit("getChats")
-                } else {
-                    // show error
-                }
-            }
-        }
+        socket?.emit("getChats")
         socket!!.on("chats") { args ->
             if (args[0] != null) {
                 val data = args[0] as String
@@ -88,6 +72,7 @@ class FeedActivity : AppCompatActivity() {
                 for (i in 0 until chatsRes.length()) {
                     val chat = chatsRes.getJSONObject(i)
                     val messageText = chat.getString("message_text")
+                    // val name = chat.getString("name")
                     feed.chats = attach(feed.chats, messageText)
                 }
                 adapter.updateTags(feed.chats)
@@ -95,9 +80,8 @@ class FeedActivity : AppCompatActivity() {
         }
     }
 
-    fun initialgetTag(): String{
-        return ""
-        // go to file, check if tag exists
+    fun initialgetTag(): String {
+        return "";
     }
 
     fun attach (arr: Array<String?>, str: String): Array<String?> {
@@ -106,10 +90,10 @@ class FeedActivity : AppCompatActivity() {
         return array
     }
 
-    fun openChat(tag: String){
+    fun openChat(name: String, uid: String){
         val intent = Intent(this, Chat::class.java)
-        intent.putExtra("uid","8")
-        intent.putExtra("name","mila")
+        intent.putExtra("uid",uid)
+        intent.putExtra("name",name)
         startActivity(intent)
     }
 }

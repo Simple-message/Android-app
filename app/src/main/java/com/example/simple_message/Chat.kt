@@ -24,7 +24,6 @@ class Chat : AppCompatActivity() {
     //region MESSAGE
     lateinit var sendButton: ImageButton
     var messages: ArrayList<Message> = ArrayList<Message>()
-    var selfUid:Int = 0
     var recieverUid: Int = 0
     var recieverName: String = ""
     //endregion
@@ -61,7 +60,6 @@ class Chat : AppCompatActivity() {
         chat_messages.adapter = messageAdapter
 
         //handle sockets
-        SocketHandler.setSocket()
         socket = SocketHandler.getSocket()
         socket!!.connect()
         getHistory()
@@ -79,7 +77,7 @@ class Chat : AppCompatActivity() {
     }
 
     fun getHistory() {
-        val params = "{\"sender_id\":1,\"reciever_id\":"+recieverUid+"}"
+        val params = "{\"reciever_id\":"+recieverUid+"}"
         socket?.emit("history", params)
     }
 
@@ -87,7 +85,7 @@ class Chat : AppCompatActivity() {
     fun sendMessage() {
         var messageText: String = messageInput.text.toString()
         messageInput.setText("")
-        val params = "{\"sender_id\":1,\"reciever_id\":"+recieverUid+",\"text\":\""+messageText+"\"}"
+        val params = "{\"reciever_id\":"+recieverUid+",\"text\":\""+messageText+"\"}"
         socket?.emit("messageToChat", params)
     }
 

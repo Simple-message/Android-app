@@ -92,7 +92,7 @@ class Chat : AppCompatActivity() {
         val handler = Handler(Looper.getMainLooper())
 
         executor.execute {
-            val imageURL = "http://192.168.10.105:8000/fileServer/avatars/"+uid+".png"
+            val imageURL = "http://10.0.2.2:8000/fileServer/avatars/"+uid+".png"
             try {
                 val `in` = java.net.URL(imageURL).openStream()
                 bitmap = BitmapFactory.decodeStream(`in`)

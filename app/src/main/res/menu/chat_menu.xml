@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/recieverAvatar"
-        android:title="avatar"
-        android:icon="@drawable/unnamed"/>
+        android:id="@+id/menu_name"
+        android:title="Name"
+        app:showAsAction="always"
+        />
 
+    <item
+        android:id="@+id/menu_avatar"
+        android:title="Avatar"
+        android:icon="@drawable/unnamed"
+        app:showAsAction="always"
+
+        />
 </menu>

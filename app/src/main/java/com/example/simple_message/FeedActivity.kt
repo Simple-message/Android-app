@@ -1,10 +1,14 @@
 package com.example.simple_message
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +16,7 @@ import com.example.simple_message.adapters.feedAdapter
 import com.example.simple_message.factories.Feed
 import org.json.JSONObject
 import org.json.JSONTokener
+import java.util.concurrent.Executors
 
 class FeedActivity : AppCompatActivity() {
 
@@ -38,7 +43,7 @@ class FeedActivity : AppCompatActivity() {
         adapter.setOnItemClickListener(object: feedAdapter.OnItemClickListener{
             override fun OnClick(position: Int) {
                 // val name = feed.chats[position].toString()
-                openChat("mila", "8") // put here name and reciever id
+                openChat("mila", "19") // put here name and reciever id
             }
         })
 
@@ -76,6 +81,25 @@ class FeedActivity : AppCompatActivity() {
                     feed.chats = attach(feed.chats, messageText)
                 }
                 adapter.updateTags(feed.chats)
+            }
+        }
+    }
+
+    fun loadAvatar(uid: Int, iv: ImageView) {
+        val executor = Executors.newSingleThreadExecutor()
+        val handler = Handler(Looper.getMainLooper())
+
+        executor.execute {
+            val imageURL = "http://192.168.10.105:8000/fileServer/avatars/"+uid+".png"
+            try {
+                val `in` = java.net.URL(imageURL).openStream()
+                val bitmap = BitmapFactory.decodeStream(`in`)
+                handler.post {
+                    iv.setImageBitmap(bitmap)
+                }
+            }
+            catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }

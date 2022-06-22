@@ -1,10 +1,14 @@
 package com.example.simple_message
 
 import SocketHandler
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
-import android.util.Base64
+import android.os.Handler
+import android.os.Looper
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -14,19 +18,19 @@ import com.example.simple_message.adapters.ChatMessagesAdapter
 import com.example.simple_message.factories.Message
 import org.json.JSONObject
 import org.json.JSONTokener
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
-import java.net.MalformedURLException
-import java.net.URL
 import java.time.ZonedDateTime
+import java.util.*
+import java.util.concurrent.Executors
+
 
 class Chat : AppCompatActivity() {
     //region MESSAGEMANAGERS
     private var messageLayoutManager: RecyclerView.LayoutManager? = null
     private var messageAdapter: RecyclerView.Adapter<ChatMessagesAdapter.ViewHolder>? = null
     lateinit var messageInput: EditText
+    var menu: Menu? = null
     lateinit var chat_messages: RecyclerView
+    var bitmap: Bitmap? = null
     //endregion
 
     //region MESSAGE
@@ -42,20 +46,21 @@ class Chat : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
+        setTitle("");
+
+        var actionBar = getSupportActionBar()
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true)
+        }
 
         //get extras
         recieverUid = intent.getStringExtra("uid")!!.toInt()
         recieverName = intent.getStringExtra("name")!!
 
-        //handle actionbar
-        val actionbar = supportActionBar
-        if (actionbar != null) {
-            actionbar!!.title = recieverName
-            actionbar.setDisplayHomeAsUpEnabled(true)
-        }
         //set elements
         messageInput = findViewById(R.id.messageInput)
         sendButton = findViewById(R.id.send)
+
         sendButton.setOnClickListener {
             sendMessage()
         }
@@ -78,17 +83,31 @@ class Chat : AppCompatActivity() {
             handleMessageToChat(args)
         }
 
-        socket?.emit("avatar", recieverUid)
-        socket!!.on("avatar") {args ->
-            if (args[0] != null) {
-                val data = args[0] as JSONObject
-                val code = data.getString("code")
-                //check code
-                val imageString = data.getString("avatar")
-                val imageBytes = Base64.decode(imageString, Base64.DEFAULT)
-                val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-            }
+        loadAvatar(recieverUid);
 
+    }
+
+    fun loadAvatar(uid: Int) {
+        val executor = Executors.newSingleThreadExecutor()
+        val handler = Handler(Looper.getMainLooper())
+
+        executor.execute {
+            val imageURL = "http://192.168.10.105:8000/fileServer/avatars/"+uid+".png"
+            try {
+                val `in` = java.net.URL(imageURL).openStream()
+                bitmap = BitmapFactory.decodeStream(`in`)
+                handler.post {
+                    val avatarItem = menu?.findItem(R.id.menu_avatar)
+                    val iv = ImageView(this@Chat)
+                    iv.maxHeight = 18
+                    iv.maxWidth = 18
+                    avatarItem?.setActionView(iv)
+                    iv.setImageBitmap(bitmap)
+                }
+            }
+            catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -100,6 +119,20 @@ class Chat : AppCompatActivity() {
     fun getHistory() {
         val params = "{\"reciever_id\":"+recieverUid+"}"
         socket?.emit("history", params)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        this.menu = menu
+        menuInflater.inflate(R.menu.chat_menu, menu)
+        menu?.findItem(R.id.menu_name)?.setTitle(recieverName)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_avatar -> Toast.makeText(this, "avatar clicked", Toast.LENGTH_SHORT).show()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -125,7 +158,6 @@ class Chat : AppCompatActivity() {
             messages.add(message)
             chat_messages.scrollToPosition(messages.size - 1);
         }
-//                    (messageAdapter as ChatMessagesAdapter).addMessage(message)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

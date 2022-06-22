@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
         buttonRegister.setOnClickListener {
             val loginName = loginArea.text.toString()
-            val loginData = "{\"login:\"\""+loginName+"\",\"avatar\":\""+avatarBase64+"\"}"
+            val loginData = "{\"login\":\""+loginName+"\",\"avatar\":\""+avatarBase64.replace("\n", "\\n")+"\"}"
             socket?.emit("register", loginData)
         }
 

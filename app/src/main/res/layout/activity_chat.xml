@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Chat">
+    tools:context=".ChatActivity">
 
 
     <EditText
+        android:layout_marginLeft="20dp"
         android:id="@+id/messageInput"
         android:layout_width="298dp"
         android:layout_height="48dp"

@@ -22,7 +22,7 @@
             android:name=".FeedActivity"
             android:exported="false" />
         <activity
-            android:name=".Chat"
+            android:name=".ChatActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

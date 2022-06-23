@@ -23,7 +23,7 @@ import java.util.*
 import java.util.concurrent.Executors
 
 
-class Chat : AppCompatActivity() {
+class ChatActivity() : AppCompatActivity() {
     //region MESSAGEMANAGERS
     private var messageLayoutManager: RecyclerView.LayoutManager? = null
     private var messageAdapter: RecyclerView.Adapter<ChatMessagesAdapter.ViewHolder>? = null
@@ -98,7 +98,7 @@ class Chat : AppCompatActivity() {
                 bitmap = BitmapFactory.decodeStream(`in`)
                 handler.post {
                     val avatarItem = menu?.findItem(R.id.menu_avatar)
-                    val iv = ImageView(this@Chat)
+                    val iv = ImageView(this@ChatActivity)
                     iv.maxHeight = 18
                     iv.maxWidth = 18
                     avatarItem?.setActionView(iv)

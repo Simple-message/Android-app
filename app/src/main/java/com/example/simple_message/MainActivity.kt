@@ -13,6 +13,9 @@ import android.os.Bundle
 import android.util.Base64
 import android.util.Base64.DEFAULT
 import android.util.Base64.encodeToString
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +32,13 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
     var socket: io.socket.client.Socket? = null
     var avatarBase64: String = ""
+    var loginArea: EditText? = null
+    var buttonLogIn: Button? = null
+    var buttonRegister: Button? = null
+    var uploadAvatar: ImageButton? = null
+    var submit: Button? = null
+    var isRegister: Boolean = false
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -47,25 +57,33 @@ class MainActivity : AppCompatActivity() {
         }
 
         //region VIEWS
-        val buttonRegister = findViewById<Button>(R.id.buttonRegister)
-        val buttonLogIn = findViewById<Button>(R.id.buttonLogIn)
-        val loginArea = findViewById<EditText>(R.id.login)
-        val uploadAvatar = findViewById<ImageButton>(R.id.uploadAvatar)
+        buttonRegister = findViewById<Button>(R.id.buttonRegister)
+        buttonLogIn = findViewById<Button>(R.id.buttonLogIn)
+        loginArea = findViewById<EditText>(R.id.login)
+        uploadAvatar = findViewById<ImageButton>(R.id.uploadAvatar)
+        submit = findViewById(R.id.submit_button)
         //endregion
 
-        uploadAvatar.setOnClickListener{
+        uploadAvatar?.setOnClickListener{
             pickImage()
         }
 
-        buttonRegister.setOnClickListener {
-            val loginName = loginArea.text.toString()
-            val loginData = "{\"login\":\""+loginName+"\",\"avatar\":\""+avatarBase64.replace("\n", "\\n")+"\"}"
-            socket?.emit("register", loginData)
+        submit?.setOnClickListener{
+            val loginName = loginArea?.text.toString()
+            if (isRegister) {
+                val loginData = "{\"login\":\""+loginName+"\",\"avatar\":\""+avatarBase64.replace("\n", "\\n")+"\"}"
+                socket?.emit("register", loginData)
+            } else {
+                sendLoginEvent(loginName)
+            }
         }
 
-        buttonLogIn.setOnClickListener {
-            val loginName = loginArea.text.toString()
-            sendLoginEvent(loginName)
+        buttonRegister?.setOnClickListener {
+            showInputDataScreen(true)
+        }
+
+        buttonLogIn?.setOnClickListener {
+            showInputDataScreen(false)
         }
 
         socket?.on("login") { args ->
@@ -73,17 +91,33 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun showInputDataScreen(isRegister: Boolean) {
+        this.isRegister = isRegister
+        loginArea?.visibility = View.VISIBLE
+        buttonRegister?.visibility = View.GONE
+        buttonLogIn?.visibility = View.GONE
+        submit?.visibility = View.VISIBLE
+        if (isRegister) {
+            uploadAvatar?.visibility = View.VISIBLE
+        }
+    }
+
+    fun hideInputDataScreen() {
+        this.isRegister = false
+        loginArea?.visibility = View.GONE
+        buttonRegister?.visibility = View.VISIBLE
+        buttonLogIn?.visibility = View.VISIBLE
+        submit?.visibility = View.GONE
+        uploadAvatar?.visibility = View.GONE
+    }
+
     val singleImageResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                // There are no request codes
                 val data: Intent? = result.data
                 val selectedImageUri: Uri? = data?.data
                 if (null != selectedImageUri) {
-//                    val path = getPathFromURI(selectedImageUri)
-//                    findViewById<TextView>(R.id.textView).text = path
                     findViewById<ImageView>(R.id.uploadAvatar).setImageURI(selectedImageUri)
-
                     avatarBase64 = encode(selectedImageUri)
                 }
             }
@@ -92,8 +126,6 @@ class MainActivity : AppCompatActivity() {
     fun encode(imageUri: Uri): String {
         val input = getContentResolver().openInputStream(imageUri)
         val image = BitmapFactory.decodeStream(input , null, null)
-
-        // Encode image to base64 string
         val baos = ByteArrayOutputStream()
         image?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         var imageBytes = baos.toByteArray()
@@ -101,18 +133,8 @@ class MainActivity : AppCompatActivity() {
         return imageString
     }
 
-
-    fun decode(imageString: String): Bitmap? {
-
-        // Decode base64 string to image
-        val imageBytes = Base64.decode(imageString, Base64.DEFAULT)
-        val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-        return decodedImage
-    }
-
     fun pickImage() {
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            //No Permission
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),1)
         } else {
             val intent = Intent()
@@ -120,8 +142,6 @@ class MainActivity : AppCompatActivity() {
             intent.action = Intent.ACTION_GET_CONTENT
             singleImageResultLauncher.launch(Intent.createChooser(intent, "Select Picture"))
         }
-
-
     }
 
     fun sendLoginEvent(name: String) {
@@ -150,5 +170,17 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.submit_screen, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.back -> hideInputDataScreen()
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

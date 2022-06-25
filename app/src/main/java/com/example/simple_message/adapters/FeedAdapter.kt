@@ -1,22 +1,21 @@
 package com.example.simple_message.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simple_message.R
-import com.example.simple_message.factories.Feed
-
-class feedAdapter(private var tags: Array<String?>) : RecyclerView
+import com.example.simple_message.factories.Chat
+class feedAdapter(private var tags: Array<Chat?>) : RecyclerView
 .Adapter<feedAdapter.viewHolder>() {
 
     class viewHolder(itemView: View, listener: OnItemClickListener) : RecyclerView.ViewHolder(itemView) {
         val textView: TextView = itemView.findViewById(R.id.chatTag)
+        val name: TextView = itemView.findViewById(R.id.name)
+        var uid: String? = null
         init {
-            itemView.setOnClickListener{
+            itemView.setOnClickListener {
                 listener.OnClick(adapterPosition)
             }
         }
@@ -24,12 +23,10 @@ class feedAdapter(private var tags: Array<String?>) : RecyclerView
 
     private lateinit var onCLickListener: OnItemClickListener
 
-    interface OnItemClickListener{
+    interface OnItemClickListener {
 
-        fun OnClick(position: Int){
-
+        fun OnClick(position: Int) {
         }
-
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener){
@@ -43,7 +40,10 @@ class feedAdapter(private var tags: Array<String?>) : RecyclerView
     }
 
     override fun onBindViewHolder(holder: viewHolder, position: Int) {
-        holder.textView.text = tags[position]
+        val chat = tags[position]
+        holder.textView.text = chat?.text
+        holder.name.text = chat?.name
+        holder.uid = chat?.uid
     }
 
     override fun getItemId(position: Int): Long {
@@ -52,8 +52,7 @@ class feedAdapter(private var tags: Array<String?>) : RecyclerView
 
     override fun getItemCount() = tags.size
 
-    fun updateTags(tags: Array<String?>) {
+    fun updateTags(tags: Array<Chat?>) {
         this.tags = tags
     }
-
 }

@@ -1,4 +1,5 @@
 package com.example.simple_message.factories
 
-class Feed(val ownerTag: String, var chats: Array<String?>) {
-}
+import com.example.simple_message.interfaces.FeedInterface
+
+class Feed(override var chats: Array<Chat?>) : FeedInterface

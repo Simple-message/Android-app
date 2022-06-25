@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
-import com.example.simple_message.R
 import com.example.simple_message.factories.Message
+import com.example.simple_message.R
 import java.time.format.DateTimeFormatter
 
-class ChatMessagesAdapter(messages: ArrayList<Message>): RecyclerView.Adapter<ChatMessagesAdapter.ViewHolder>() {
+class ChatMessagesAdapter(messages: ArrayList<Message>) : RecyclerView.Adapter<ChatMessagesAdapter.ViewHolder>() {
 
     private var messages: ArrayList<Message>
 
@@ -40,7 +40,7 @@ class ChatMessagesAdapter(messages: ArrayList<Message>): RecyclerView.Adapter<Ch
         return messages.size
     }
 
-    inner class ViewHolder(messageView: View): RecyclerView.ViewHolder(messageView) {
+    inner class ViewHolder(messageView: View) : RecyclerView.ViewHolder(messageView) {
         var messageText: TextView
         var messageTime: TextView
         var messageName: TextView
@@ -55,5 +55,4 @@ class ChatMessagesAdapter(messages: ArrayList<Message>): RecyclerView.Adapter<Ch
     fun addMessage(message: Message) {
         messages.add(message)
     }
-
 }

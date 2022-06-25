@@ -7,4 +7,17 @@
     <string name="tagNew">Tag</string>
     <string name="register">Register</string>
     <string name="log_in">Log in</string>
+    <string name="submit">Submit</string>
+    <string name="todo">TODO</string>
+    <string name="message">Message</string>
+    <string name="textview">TextView</string>
+    <string name="name">name</string>
+    <string name="namenew">Name</string>
+    <string name="back">Back</string>
+    <string name="avatar">Avatar</string>
+    <string name="nameChat">Name</string>
+    <string name="nameActivityChat">Name</string>
+    <string name="create_new_chat">Create new chat</string>
+    <string name="todoChat">TODO</string>
+    <string name="todolayout">TODO</string>
 </resources>

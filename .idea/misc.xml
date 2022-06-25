@@ -6,15 +6,9 @@
         <entry key="app/src/main/res/layout/activity_chat.xml" value="0.18177083333333333" />
         <entry key="app/src/main/res/layout/activity_feed.xml" value="0.18177083333333333" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
-<<<<<<< Updated upstream
         <entry key="app/src/main/res/layout/chat_layout.xml" value="0.18072916666666666" />
         <entry key="app/src/main/res/layout/chat_message.xml" value="0.33" />
         <entry key="app/src/main/res/layout/new_chat.xml" value="0.33" />
-        <entry key="app/src/main/res/menu/menu.xml" value="0.2838541666666667" />
-=======
-        <entry key="app/src/main/res/layout/chat_message.xml" value="0.16927083333333334" />
-        <entry key="app/src/main/res/menu/chat_menu.xml" value="0.376953125" />
->>>>>>> Stashed changes
       </map>
     </option>
   </component>

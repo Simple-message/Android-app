@@ -10,7 +10,7 @@
         android:id="@+id/buttonNewChat"
         android:layout_width="412dp"
         android:layout_height="62dp"
-        android:text="Create new chat"
+        android:text="@string/create_new_chat"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.009"

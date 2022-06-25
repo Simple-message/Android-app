@@ -21,10 +21,10 @@ Also there are adapters for different views, to add needed functionality.
 ## Todos:
 * write some android tests;  
 * add new functionality for users
-## Author
+## Authors
 [Gorbunova Yelyzaveta](https://github.com/lizardlynx)  
 [Maksym Marchenko](https://github.com/kertnique)
 ## License
-MIT © [simple-server](https://github.com/Simple-message/Simple-Server)
+MIT © [Android-app](https://github.com/Simple-message/Android-app)
 
 
